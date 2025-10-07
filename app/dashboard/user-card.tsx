@@ -60,6 +60,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SubscriptionTierLabel } from "@/components/tier-labels";
 import { Component } from "./change-plan";
 import { Subscription } from "@better-auth/stripe";
+import { ContinueButton } from "@hellocoop/better-auth";
 
 export default function UserCard(props: {
 	session: Session | null;
@@ -137,9 +138,15 @@ export default function UserCard(props: {
 								<p className="text-sm">{session?.user.email}</p>
 							</div>
 						</div>
-						<EditUserDialog />
+						{/* <ContinueButton className="!text-xs h-8 w-auto" onClick={
+							async () => await client.signInWithHello({
+								callbackURL: "/dashboard",
+								scopes: ["openid", "profile"],
+								prompt: "consent",
+							})
+						}>Update Profile with Hello</ContinueButton> */}
 					</div>
-					<div className="flex items-center justify-between">
+					{/* <div className="flex items-center justify-between">
 						<div>
 							<SubscriptionTierLabel
 								tier={subscription?.plan?.toLowerCase() as "plus"}
@@ -149,7 +156,7 @@ export default function UserCard(props: {
 							currentPlan={subscription?.plan?.toLowerCase() as "plus"}
 							isTrial={subscription?.status === "trialing"}
 						/>
-					</div>
+					</div> */}
 				</div>
 
 				{session?.user.emailVerified ? null : (
@@ -243,223 +250,9 @@ export default function UserCard(props: {
 							);
 						})}
 				</div>
-				<div className="border-y py-4 flex items-center flex-wrap justify-between gap-2">
-					<div className="flex flex-col gap-2">
-						<p className="text-sm">Passkeys</p>
-						<div className="flex gap-2 flex-wrap">
-							<AddPasskey />
-							<ListPasskeys />
-						</div>
-					</div>
-					<div className="flex flex-col gap-2">
-						<p className="text-sm">Two Factor</p>
-						<div className="flex gap-2">
-							{!!session?.user.twoFactorEnabled && (
-								<Dialog>
-									<DialogTrigger asChild>
-										<Button variant="outline" className="gap-2">
-											<QrCode size={16} />
-											<span className="md:text-sm text-xs">Scan QR Code</span>
-										</Button>
-									</DialogTrigger>
-									<DialogContent className="sm:max-w-[425px] w-11/12">
-										<DialogHeader>
-											<DialogTitle>Scan QR Code</DialogTitle>
-											<DialogDescription>
-												Scan the QR code with your TOTP app
-											</DialogDescription>
-										</DialogHeader>
-
-										{twoFactorVerifyURI ? (
-											<>
-												<div className="flex items-center justify-center">
-													<QRCode value={twoFactorVerifyURI} />
-												</div>
-												<div className="flex gap-2 items-center justify-center">
-													<p className="text-sm text-muted-foreground">
-														Copy URI to clipboard
-													</p>
-													<CopyButton textToCopy={twoFactorVerifyURI} />
-												</div>
-											</>
-										) : (
-											<div className="flex flex-col gap-2">
-												<PasswordInput
-													value={twoFaPassword}
-													onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-														setTwoFaPassword(e.target.value)
-													}
-													placeholder="Enter Password"
-												/>
-												<Button
-													onClick={async () => {
-														if (twoFaPassword.length < 8) {
-															toast.error(
-																"Password must be at least 8 characters",
-															);
-															return;
-														}
-														await client.twoFactor.getTotpUri(
-															{
-																password: twoFaPassword,
-															},
-															{
-																onSuccess(context) {
-																	setTwoFactorVerifyURI(context.data.totpURI);
-																},
-															},
-														);
-														setTwoFaPassword("");
-													}}
-												>
-													Show QR Code
-												</Button>
-											</div>
-										)}
-									</DialogContent>
-								</Dialog>
-							)}
-							<Dialog open={twoFactorDialog} onOpenChange={setTwoFactorDialog}>
-								<DialogTrigger asChild>
-									<Button
-										variant={
-											session?.user.twoFactorEnabled ? "destructive" : "outline"
-										}
-										className="gap-2"
-									>
-										{session?.user.twoFactorEnabled ? (
-											<ShieldOff size={16} />
-										) : (
-											<ShieldCheck size={16} />
-										)}
-										<span className="md:text-sm text-xs">
-											{session?.user.twoFactorEnabled
-												? "Disable 2FA"
-												: "Enable 2FA"}
-										</span>
-									</Button>
-								</DialogTrigger>
-								<DialogContent className="sm:max-w-[425px] w-11/12">
-									<DialogHeader>
-										<DialogTitle>
-											{session?.user.twoFactorEnabled
-												? "Disable 2FA"
-												: "Enable 2FA"}
-										</DialogTitle>
-										<DialogDescription>
-											{session?.user.twoFactorEnabled
-												? "Disable the second factor authentication from your account"
-												: "Enable 2FA to secure your account"}
-										</DialogDescription>
-									</DialogHeader>
-
-									{twoFactorVerifyURI ? (
-										<div className="flex flex-col gap-2">
-											<div className="flex items-center justify-center">
-												<QRCode value={twoFactorVerifyURI} />
-											</div>
-											<Label htmlFor="password">
-												Scan the QR code with your TOTP app
-											</Label>
-											<Input
-												value={twoFaPassword}
-												onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-													setTwoFaPassword(e.target.value)
-												}
-												placeholder="Enter OTP"
-											/>
-										</div>
-									) : (
-										<div className="flex flex-col gap-2">
-											<Label htmlFor="password">Password</Label>
-											<PasswordInput
-												id="password"
-												placeholder="Password"
-												value={twoFaPassword}
-												onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-													setTwoFaPassword(e.target.value)
-												}
-											/>
-										</div>
-									)}
-									<DialogFooter>
-										<Button
-											disabled={isPendingTwoFa}
-											onClick={async () => {
-												if (twoFaPassword.length < 8 && !twoFactorVerifyURI) {
-													toast.error("Password must be at least 8 characters");
-													return;
-												}
-												setIsPendingTwoFa(true);
-												if (session?.user.twoFactorEnabled) {
-													const res = await client.twoFactor.disable({
-														password: twoFaPassword,
-														fetchOptions: {
-															onError(context) {
-																toast.error(context.error.message);
-															},
-															onSuccess() {
-																toast("2FA disabled successfully");
-																setTwoFactorDialog(false);
-															},
-														},
-													});
-												} else {
-													if (twoFactorVerifyURI) {
-														await client.twoFactor.verifyTotp({
-															code: twoFaPassword,
-															fetchOptions: {
-																onError(context) {
-																	setIsPendingTwoFa(false);
-																	setTwoFaPassword("");
-																	toast.error(context.error.message);
-																},
-																onSuccess() {
-																	toast("2FA enabled successfully");
-																	setTwoFactorVerifyURI("");
-																	setIsPendingTwoFa(false);
-																	setTwoFaPassword("");
-																	setTwoFactorDialog(false);
-																},
-															},
-														});
-														return;
-													}
-													const res = await client.twoFactor.enable({
-														password: twoFaPassword,
-														fetchOptions: {
-															onError(context) {
-																toast.error(context.error.message);
-															},
-															onSuccess(ctx) {
-																setTwoFactorVerifyURI(ctx.data.totpURI);
-																// toast.success("2FA enabled successfully");
-																// setTwoFactorDialog(false);
-															},
-														},
-													});
-												}
-												setIsPendingTwoFa(false);
-												setTwoFaPassword("");
-											}}
-										>
-											{isPendingTwoFa ? (
-												<Loader2 size={15} className="animate-spin" />
-											) : session?.user.twoFactorEnabled ? (
-												"Disable 2FA"
-											) : (
-												"Enable 2FA"
-											)}
-										</Button>
-									</DialogFooter>
-								</DialogContent>
-							</Dialog>
-						</div>
-					</div>
-				</div>
 			</CardContent>
 			<CardFooter className="gap-2 justify-between items-center">
-				<ChangePassword />
+				{/* <ChangePassword /> */}
 				{session?.session.impersonatedBy ? (
 					<Button
 						className="gap-2 z-10"
@@ -631,122 +424,6 @@ function ChangePassword() {
 							<Loader2 size={15} className="animate-spin" />
 						) : (
 							"Change Password"
-						)}
-					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
-	);
-}
-
-function EditUserDialog() {
-	const { data, isPending, error } = useSession();
-	const [name, setName] = useState<string>();
-	const router = useRouter();
-	const [image, setImage] = useState<File | null>(null);
-	const [imagePreview, setImagePreview] = useState<string | null>(null);
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			setImage(file);
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setImagePreview(reader.result as string);
-			};
-			reader.readAsDataURL(file);
-		}
-	};
-	const [open, setOpen] = useState<boolean>(false);
-	const [isLoading, startTransition] = useTransition();
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button size="sm" className="gap-2" variant="secondary">
-					<Edit size={13} />
-					Edit User
-				</Button>
-			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px] w-11/12">
-				<DialogHeader>
-					<DialogTitle>Edit User</DialogTitle>
-					<DialogDescription>Edit user information</DialogDescription>
-				</DialogHeader>
-				<div className="grid gap-2">
-					<Label htmlFor="name">Full Name</Label>
-					<Input
-						id="name"
-						type="name"
-						placeholder={data?.user.name}
-						required
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setName(e.target.value);
-						}}
-					/>
-					<div className="grid gap-2">
-						<Label htmlFor="image">Profile Image</Label>
-						<div className="flex items-end gap-4">
-							{imagePreview && (
-								<div className="relative w-16 h-16 rounded-sm overflow-hidden">
-									<Image
-										src={imagePreview}
-										alt="Profile preview"
-										layout="fill"
-										objectFit="cover"
-									/>
-								</div>
-							)}
-							<div className="flex items-center gap-2 w-full">
-								<Input
-									id="image"
-									type="file"
-									accept="image/*"
-									onChange={handleImageChange}
-									className="w-full text-muted-foreground"
-								/>
-								{imagePreview && (
-									<X
-										className="cursor-pointer"
-										onClick={() => {
-											setImage(null);
-											setImagePreview(null);
-										}}
-									/>
-								)}
-							</div>
-						</div>
-					</div>
-				</div>
-				<DialogFooter>
-					<Button
-						disabled={isLoading}
-						onClick={async () => {
-							startTransition(async () => {
-								await client.updateUser({
-									image: image ? await convertImageToBase64(image) : undefined,
-									name: name ? name : undefined,
-									fetchOptions: {
-										onSuccess: () => {
-											toast.success("User updated successfully");
-										},
-										onError: (error) => {
-											toast.error(error.error.message);
-										},
-									},
-								});
-								startTransition(() => {
-									setName("");
-									router.refresh();
-									setImage(null);
-									setImagePreview(null);
-									setOpen(false);
-								});
-							});
-						}}
-					>
-						{isLoading ? (
-							<Loader2 size={15} className="animate-spin" />
-						) : (
-							"Update"
 						)}
 					</Button>
 				</DialogFooter>

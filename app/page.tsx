@@ -22,50 +22,7 @@ import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { getCallbackURL } from "@/lib/shared";
-
-export interface ContinueButtonProps
-    extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'black-and-invert' | 'black-and-white' | 'white-and-black'
-    hover?: 'glow' | 'flare' | 'pop' | 'none'
-    children?: React.ReactNode
-}
-
-/**
- * Hellō branded button component
- *
- * Renders a properly styled Hellō button with the ō character and official branding.
- *
- * @param variant - Button color variant (default: 'black-and-invert')
- * @param hover - Hover effect (default: 'glow')
- * @param children - Custom button text (default: 'Continue with Hellō')
- *
- * @example
- * ```tsx
- * <ContinueButton onClick={handleSignIn} />
- * ```
- */
-export const ContinueButton: React.FC<ContinueButtonProps> = ({
-    variant = '',
-    hover = '',
-    children = 'Continue with Hellō',
-    className = '',
-    ...props
-}) => {
-    const classes = [
-        'hello-btn',
-        `hello-btn-${variant}`,
-        hover !== 'none' && `hello-btn-hover-pop`,
-        className,
-    ]
-        .filter(Boolean)
-        .join(' ')
-
-    return (
-        <button className={classes} {...props}>
-            ō&nbsp;&nbsp;{children}
-        </button>
-    )
-}
+import { ContinueButton } from "@hellocoop/better-auth";
 
 
 const features = [
@@ -122,15 +79,14 @@ export default async function Home() {
 						Better Auth.
 					</h3>
 					<p className="text-center break-words text-sm md:text-base">
-						Official demo to showcase{" "}
+					Next.js demo app showcasing the Better Auth plugin for{" "}
 						<a
-							href="https://better-auth.com"
+							href="https://hello.dev"
 							target="_blank"
-							className="italic underline"
+							className="underline"
 						>
-							better-auth.
+							Hellō
 						</a>{" "}
-						features and capabilities. <br />
 					</p>
 				</div>
 				<div className="md:w-10/12 w-full flex flex-col gap-4">
@@ -143,24 +99,12 @@ export default async function Home() {
 								</span>
 							</div>
 						</div>
-						<div className="flex gap-2 justify-center flex-wrap">
-							{features.map((feature) => (
-								<a
-									className="border-b pb-1 text-muted-foreground text-xs cursor-pointer hover:text-foreground duration-150 ease-in-out transition-all hover:border-foreground flex items-center gap-1"
-									key={feature.name}
-									href={feature.link}
-								>
-									{feature.name}
-								</a>
-							))}
-						</div>
 					</div>
-					<ContinueButton className="w-56 mx-auto mt-6" onClick={async () => {
+					<ContinueButton className="w-56 mx-auto mt-6 hello-btn-black-and-invert" onClick={async () => {
 						await client.signInWithHello({
 							callbackURL: "/dashboard",
 							scopes: ["openid", "profile"],
-							prompt: "consent",
-							providerHint: "apple--",
+							providerHint: "github",
 						})
 					}} />
 				</div>
