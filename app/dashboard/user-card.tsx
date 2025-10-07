@@ -138,13 +138,13 @@ export default function UserCard(props: {
 								<p className="text-sm">{session?.user.email}</p>
 							</div>
 						</div>
-						{/* <ContinueButton className="!text-xs h-8 w-auto" onClick={
+						<ContinueButton className="!text-sm h-8 w-auto hello-btn-black-and-invert" onClick={
 							async () => await client.signInWithHello({
 								callbackURL: "/dashboard",
 								scopes: ["openid", "profile"],
 								prompt: "consent",
 							})
-						}>Update Profile with Hello</ContinueButton> */}
+						}>Update Profile with Hello</ContinueButton>
 					</div>
 					{/* <div className="flex items-center justify-between">
 						<div>
