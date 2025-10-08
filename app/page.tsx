@@ -103,8 +103,6 @@ export default async function Home() {
 					<ContinueButton className="w-56 mx-auto mt-6 hello-btn-black-and-invert" onClick={async () => {
 						await client.signInWithHello({
 							callbackURL: "/dashboard",
-							scopes: ["openid", "profile"],
-							providerHint: "github",
 						})
 					}} />
 					
