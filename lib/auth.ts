@@ -119,7 +119,8 @@ export const auth = betterAuth({
 		hellocoop({
 			config: {
 				clientId: "fb2f193e-d2e0-40d7-8e1f-3bfcab3eac6d",
-				providerHint: "github"
+				providerHint: "github",
+				scopes: ["openid","profile","nickname","given_name","family_name","phone","ethereum","discord","twitter","github","gitlab"]
 			},
 		}),
 		organization({
