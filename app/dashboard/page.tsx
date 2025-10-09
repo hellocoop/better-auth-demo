@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import UserCard from "./user-card";
+import InfoBlock from "@/components/InfoBlock";
 
 export default async function DashboardPage() {
 	const [session, activeSessions, deviceSessions, organization, subscriptions] =
@@ -27,6 +28,7 @@ export default async function DashboardPage() {
 					activeSessions={JSON.parse(JSON.stringify(activeSessions))}
 				/>
 			</div>
+			<InfoBlock />
 		</div>
 	);
 }

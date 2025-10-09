@@ -2,8 +2,8 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { SignInButton } from "@/components/sign-in-btn";
-import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
+import InfoBlock from "@/components/InfoBlock";
 
 export default async function Home() {
 	const session = await auth.api.getSession({
@@ -53,13 +53,7 @@ export default async function Home() {
 							<span>Dashboard</span>
 						</Button></Link>) : <SignInButton/>
 					}
-					<div className="flex flex-col gap-3 pt-16 flex-wrap">
-						<div className="border-y py-2 border-dotted bg-secondary/60 opacity-80">
-							<div className="text-xs text-center gap-2 text-muted-foreground">
-								This sample app demonstrates how you can add Hellō login and registration to Better Auth in seconds using the <a href="https://www.npmjs.com/package/@hellocoop/better-auth" className="inline underline">@hellocoop/better-auth</a> plugin package.
-							</div>
-						</div>
-					</div>
+					<InfoBlock />
 				</div>
 			</main>
 		</div>
