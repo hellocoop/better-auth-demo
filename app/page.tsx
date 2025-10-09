@@ -17,14 +17,13 @@ export default async function Home() {
 					Hellō Better Auth Demo
 					</h3>
 					<p className="text-center break-words text-sm md:text-base">
-					Next.js demo app showcasing the Better Auth plugin for {" "}
-						<a
+						Next.js demo app showcasing the <a
 							href="https://hello.dev"
 							target="_blank"
 							className="underline"
 						>
 							Hellō
-						</a>
+						</a> plugin for Better Auth
 					</p>
 				</div>
 				<div className="w-full flex flex-col">

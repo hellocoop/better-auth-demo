@@ -1,85 +1,67 @@
-# Better Auth Demo App
+# Hellō Better Auth Demo
 
-Welcome to the Better Auth demo app! This project is built with [Next.js](https://nextjs.org) using [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a sample application showcasing the [@hellocoop/better-auth](https://www.npmjs.com/package/@hellocoop/better-auth) plugin - the fastest way to add identity to your application.
 
-## Getting Started
+## Setup
 
-Here’s how you can get the app running locally:
+To run locally, you will need:
 
-### Prerequisites
+- [nodejs 18+](https://nodejs.org/en/download)
+- [git](https://github.com/git-guides/install-git)
 
-1. **Clone the repo**:
+## 1. Clone this repository
 
-   ```bash
-   git clone https://github.com/better-auth/better-auth
-   cd better-auth/demo/nextjs
-   ```
+<https://github.com/hellocoop/better-auth-demo>
 
-2. **Install the dependencies**:
+[How to clone a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   ```
+You should now have a `better-auth-demo` directory on your machine with the contents of this repo.
 
-3. **Set up your environment variables**:
-
-   - Rename the `.env.example` file to `.env`:
-
-     ```bash
-     mv .env.example .env
-     ```
-
-   - Open `.env` and fill in the required details. These will include things like API URLs, client IDs, and secrets needed to connect to the Better Auth service.
-
-Make sure `TURSO_DATABASE_URL=your_turso_url` and `TURSO_AUTH_TOKEN=your_turso_token` is set or `USE_MYSQL=true` and `MYSQL_DATABASE_URL=your_mysql_url` is set.
-
-### Start the Development Server
-
-Once everything is set up, start the development server with:
-
+## 2. Get your Hellō Client ID
+#### Option 1: Quick CLI Setup
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx @hellocoop/quickstart
 ```
+This will open your browser, log you into Hellō, prompt you for your app name, and output your `client_id`. Set `HELLO_CLIENT_ID` to this value in the third step.
 
-The app will be live at [http://localhost:3000](http://localhost:3000). Open it in your browser, and you’re good to go!
+#### Option 2: Web Console Setup
+Visit [console.hello.coop](https://console.hello.coop), log into Hellō and create your application and obtain your Client ID which is the `HELLO_CLIENT_ID` in the third step.
 
-Feel free to jump in and edit the app by modifying `app/page.tsx`. Any changes you make will update automatically in the browser.
 
-## Features
+#### Option 3: MCP Setup
 
-Here’s what this app supports out of the box:
+1. Install the Hello Admin MCP Server for [Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=hello-admin&config=eyJ1cmwiOiJodHRwczovL2FkbWluLW1jcC5oZWxsby5jb29wIn0K), [VSCode](vscode:mcp/install?%7B%22name%22%3A%22Hell%C5%8D%20Admin%22%2C%22url%22%3A%22https%3A//admin-mcp.hello.coop%22%2C%22type%22%3A%22http%22%7D), or if you are using another IDE, click [here](https://www.hello.dev/docs/admin-mcp/#installing) to find the install links.
+1. Run the prompt (This will open your browser and log you into Hellō.):  
+`Create a Hellō application named "Hellō Better Auth Demo", and use the logos in the "logos" directory to set the dark and light mode logo versions. Then, create a ".env" file based on ".env.example", and set the "CLIENT_ID" to the one from the newly created application.`
 
-- **[Email & Password](https://www.better-auth.com/docs/basic-usage#email-password)**: Simple and secure authentication.
-- **[Organization / Teams](https://www.better-auth.com/docs/plugins/organization)**: Manage users within organizations or teams.
-- **[Passkeys](https://www.better-auth.com/docs/plugins/passkey)**: Passwordless login using modern authentication standards.
-- **[Multi-Factor Authentication (MFA)](https://www.better-auth.com/docs/plugins/2fa)**: Add an extra layer of security.
-- **[Password Reset](https://www.better-auth.com/docs/concepts/email#password-reset-email)**: Let users reset their passwords if they forget them.
-- **[Email Verification](https://www.better-auth.com/docs/concepts/email#email-verification)**: Ensure users verify their email addresses.
-- **[Roles & Permissions](https://www.better-auth.com/docs/plugins/admin#role)**: Define and manage who can do what.
-- **[Rate Limiting](https://www.better-auth.com/docs/concepts/rate-limit)**: Protect your app from abuse with smart limits.
-- **[Session Management](https://www.better-auth.com/docs/concepts/session-management)**: Handle user sessions seamlessly.
-- **[Stripe Plugin](https://www.better-auth.com/docs/plugins/stripe)**: Integrate Stripe for customer management, subscriptions, and webhooks.
-
-## Learn More
-
-Here are some helpful links if you want to dive deeper:
-
-- [Better Auth Documentation](https://better-auth.com/docs) - Everything you need to know to integrate Better Auth.
-- [Next.js Documentation](https://nextjs.org/docs) - Learn about the framework we used to build this app.
-- [Learn Next.js](https://nextjs.org/learn) - A hands-on tutorial for Next.js.
+Skip to step 4 since the MCP server will create the `.env` file with the `CLIENT_ID` for you!
 
 ---
 
-If you run into issues or have suggestions, feel free to open an issue or submit a pull request on the [GitHub repo](https://github.com/better-auth/better-auth).
+> The http://localhost* redirect URI is enabled by default, allowing you to immediately start development on your machine.
 
-Happy coding!
+
+## 3. Set your Hellō Client ID
+Copy the `.env.example` file at the root of this repo to `.env`
+and set the value of the `HELLO_CLIENT_ID` to what you got in the second step.
+
+## 4. Install and run!
+
+Run these commands to start running locally:
+
+```sh
+cd better-auth-demo
+npm install
+npm run dev
+```
+
+Open <http://localhost:3000> (assuming port 3000 was free)
+
+Click the `[ō Continue with Hellō]` button to log in. You will be redirected to the Hellō Wallet. If you have not added a logo or URLs, you will see placeholders.
+
+## Learn More
+
+- [@hellocoop/better-auth](https://www.npmjs.com/package/@hellocoop/better-auth)
+- [Hellō Docs](https://www.hello.dev/docs/)
+- [Better Auth Docs](https://www.better-auth.com/docs)
+  
