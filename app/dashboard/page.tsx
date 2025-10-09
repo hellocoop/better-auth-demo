@@ -1,19 +1,13 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import UserCard from "./user-card";
+import UserCard from "@/components/UserCard";
 import InfoBlock from "@/components/InfoBlock";
 
 export default async function DashboardPage() {
-	const [session, activeSessions, deviceSessions, organization, subscriptions] =
+	const [session ] =
 		await Promise.all([
 			auth.api.getSession({
-				headers: await headers(),
-			}),
-			auth.api.listSessions({
-				headers: await headers(),
-			}),
-			auth.api.listDeviceSessions({
 				headers: await headers(),
 			}),
 		]).catch((e) => {
@@ -25,7 +19,6 @@ export default async function DashboardPage() {
 			<div className="flex gap-4 flex-col">
 				<UserCard
 					session={JSON.parse(JSON.stringify(session))}
-					activeSessions={JSON.parse(JSON.stringify(activeSessions))}
 				/>
 			</div>
 			<InfoBlock />
