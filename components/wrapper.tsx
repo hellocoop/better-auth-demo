@@ -11,9 +11,12 @@ export function Wrapper(props: { children: React.ReactNode }) {
 			<div className="absolute pointer-events-none inset-0 md:flex items-center justify-center dark:bg-black bg-white mask-[radial-gradient(ellipse_at_center,transparent_20%,black)] hidden"></div>
 			<div className="bg-white dark:bg-black border-b py-2 flex justify-between items-center border-border absolute z-50 w-full lg:w-8/12 px-4 md:px-1">
 				<Link href="/">
-					<div className="flex gap-2 cursor-pointer">
-						<Logo />
-						<p className="dark:text-white text-black">BETTER-AUTH.</p>
+					<div className="flex gap-3 cursor-pointer items-center">
+						<span className="text-xl font-bold">Hellō</span>
+						<div className="flex items-center gap-2">
+							<Logo />
+							<p className="dark:text-white text-black">BETTER-AUTH.</p>
+						</div>
 					</div>
 				</Link>
 				<div className="z-50 flex items-center">

@@ -21,8 +21,6 @@ export const client = createAuthClient({
 	},
 });
 
-console.log(client);
-
 export const {
 	signOut,
 	useSession,

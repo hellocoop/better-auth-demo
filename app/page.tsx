@@ -26,7 +26,7 @@ export default function Home() {
 					</p>
 				</div>
 				<div className="md:w-10/12 w-full flex flex-col gap-4">
-					<div className="flex flex-col gap-3 pt-2 flex-wrap">
+					{/* <div className="flex flex-col gap-3 pt-2 flex-wrap">
 						<div className="border-y py-2 border-dotted bg-secondary/60 opacity-80">
 							<div className="text-xs flex items-center gap-2 justify-center text-muted-foreground ">
 								<span className="text-center">
@@ -34,21 +34,18 @@ export default function Home() {
 								</span>
 							</div>
 						</div>
-					</div>
+					</div> */}
 					<ContinueButton 
-						className={`w-56 mx-auto mt-6 hello-btn-black-and-invert ${isLoading ? 'hello-btn-loader' : ''}`}
+						className={`w-56 mx-auto mt-6 hello-btn-black-and-static hello-btn-hover-flare ${isLoading ? 'hello-btn-loader' : ''}`}
 						disabled={isLoading}
 						onClick={async () => {
 							setIsLoading(true);
 							try {
 								await (client as any).signInWithHello({
 									callbackURL: "/dashboard",
-									scopes: ["openid", "profile"],
-									prompt: "consent",
 								});
 							} catch (error) {
 								console.error('Sign in error:', error);
-							} finally {
 								setIsLoading(false);
 							}
 						}} 

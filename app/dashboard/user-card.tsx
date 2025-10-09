@@ -36,13 +36,8 @@ export default function UserCard(props: {
 	const router = useRouter();
 	const { data } = useSession();
 	const session = data || props.session;
-	const [isTerminating, setIsTerminating] = useState<string>();
 	const [isSignOut, setIsSignOut] = useState<boolean>(false);
-	const [emailVerificationPending, setEmailVerificationPending] =
-		useState<boolean>(false);
-	const [activeSessions, setActiveSessions] = useState(props.activeSessions);
-	const removeActiveSession = (id: string) =>
-		setActiveSessions(activeSessions.filter((session) => session.id !== id));
+	const [isUpdatingProfile, setIsUpdatingProfile] = useState<boolean>(false);
 	const { data: subscription } = useQuery({
 		queryKey: ["subscriptions"],
 		initialData: props.subscription ? props.subscription : null,
@@ -56,8 +51,6 @@ export default function UserCard(props: {
 		},
 	});
 
-	console.log(session)
-
 	return (
 		<Card>
 			<CardHeader>
@@ -65,9 +58,9 @@ export default function UserCard(props: {
 			</CardHeader>
 			<CardContent className="grid gap-8 grid-cols-1">
 				<div className="flex flex-col gap-2">
-					<div className="flex items-start justify-between">
+					<div className="flex flex-wrap gap-4 items-start justify-between">
 						<div className="flex items-center gap-4">
-							<Avatar className="hidden h-9 w-9 sm:flex ">
+							<Avatar className="h-9 w-9">
 								<AvatarImage
 									src={session?.user.image || undefined}
 									alt="Avatar"
@@ -102,163 +95,54 @@ export default function UserCard(props: {
 								<p className="text-sm">{session?.user.email}</p>
 							</div>
 						</div>
-						<ContinueButton className="!text-sm h-8 w-auto hello-btn-black-and-invert" onClick={
-							async () => await client.signInWithHello({
-								callbackURL: "/dashboard",
-								scopes: ["openid", "profile"],
-								prompt: "consent",
-							})
-						}>Update Profile with Hello</ContinueButton>
+						<ContinueButton 
+							className={`!text-sm h-8 w-auto !px-4 hello-btn-black-and-static ${isUpdatingProfile ? 'hello-btn-loader' : ''}`}
+							disabled={isUpdatingProfile}
+							onClick={async () => {
+								setIsUpdatingProfile(true);
+								try {
+									await client.signInWithHello({
+										callbackURL: "/dashboard",
+										prompt: "consent",
+										loginHint: session?.user.email,
+									});
+								} catch (error) {
+									console.error('Update profile error:', error);
+									setIsUpdatingProfile(false);
+								}
+							}}
+						>Update Profile with Hello</ContinueButton>
 					</div>
 				</div>
-
-				{session?.user.emailVerified ? null : (
-					<Alert>
-						<AlertTitle>Verify Your Email Address</AlertTitle>
-						<AlertDescription className="text-muted-foreground">
-							Please verify your email address. Check your inbox for the
-							verification email. If you haven't received the email, click the
-							button below to resend.
-							<Button
-								size="sm"
-								variant="secondary"
-								className="mt-2"
-								onClick={async () => {
-									await client.sendVerificationEmail(
-										{
-											email: session?.user.email || "",
-										},
-										{
-											onRequest(context) {
-												setEmailVerificationPending(true);
-											},
-											onError(context) {
-												toast.error(context.error.message);
-												setEmailVerificationPending(false);
-											},
-											onSuccess() {
-												toast.success("Verification email sent successfully");
-												setEmailVerificationPending(false);
-											},
-										},
-									);
-								}}
-							>
-								{emailVerificationPending ? (
-									<Loader2 size={15} className="animate-spin" />
-								) : (
-									"Resend Verification Email"
-								)}
-							</Button>
-						</AlertDescription>
-					</Alert>
-				)}
-
-				<div className="border-l-2 px-2 w-max gap-1 flex flex-col">
-					<p className="text-xs font-medium ">Active Sessions</p>
-					{activeSessions
-						.filter((session) => session.userAgent)
-						.map((session) => {
-							return (
-								<div key={session.id}>
-									<div className="flex items-center gap-2 text-sm  text-black font-medium dark:text-white">
-										{new UAParser(session.userAgent || "").getDevice().type ===
-										"mobile" ? (
-											<MobileIcon />
-										) : (
-											<Laptop size={16} />
-										)}
-										{new UAParser(session.userAgent || "").getOS().name ||
-											session.userAgent}
-										, {new UAParser(session.userAgent || "").getBrowser().name}
-										<button
-											className="text-red-500 opacity-80  cursor-pointer text-xs border-muted-foreground border-red-600  underline "
-											onClick={async () => {
-												setIsTerminating(session.id);
-												const res = await client.revokeSession({
-													token: session.token,
-												});
-
-												if (res.error) {
-													toast.error(res.error.message);
-												} else {
-													toast.success("Session terminated successfully");
-													removeActiveSession(session.id);
-												}
-												if (session.id === props.session?.session.id)
-													router.refresh();
-												setIsTerminating(undefined);
-											}}
-										>
-											{isTerminating === session.id ? (
-												<Loader2 size={15} className="animate-spin" />
-											) : session.id === props.session?.session.id ? (
-												"Sign Out"
-											) : (
-												"Terminate"
-											)}
-										</button>
-									</div>
-								</div>
-							);
-						})}
-				</div>
 			</CardContent>
-			<CardFooter className="gap-2 justify-between items-center">
-				{/* <ChangePassword /> */}
-				{session?.session.impersonatedBy ? (
-					<Button
-						className="gap-2 z-10"
-						variant="secondary"
-						onClick={async () => {
-							setIsSignOut(true);
-							await client.admin.stopImpersonating();
-							setIsSignOut(false);
-							toast.info("Impersonation stopped successfully");
-							router.push("/admin");
-						}}
-						disabled={isSignOut}
-					>
-						<span className="text-sm">
-							{isSignOut ? (
-								<Loader2 size={15} className="animate-spin" />
-							) : (
-								<div className="flex items-center gap-2">
-									<StopCircle size={16} color="red" />
-									Stop Impersonation
-								</div>
-							)}
-						</span>
-					</Button>
-				) : (
-					<Button
-						className="gap-2 z-10"
-						variant="secondary"
-						onClick={async () => {
-							setIsSignOut(true);
-							await signOut({
-								fetchOptions: {
-									onSuccess() {
-										router.push("/");
-									},
+			<CardFooter className="gap-2 justify-between items-center pt-6">
+				<Button
+					className="gap-2 z-10"
+					variant="secondary"
+					onClick={async () => {
+						setIsSignOut(true);
+						await signOut({
+							fetchOptions: {
+								onSuccess() {
+									router.push("/");
 								},
-							});
-							setIsSignOut(false);
-						}}
-						disabled={isSignOut}
-					>
-						<span className="text-sm">
-							{isSignOut ? (
-								<Loader2 size={15} className="animate-spin" />
-							) : (
-								<div className="flex items-center gap-2">
-									<LogOut size={16} />
-									Sign Out
-								</div>
-							)}
-						</span>
-					</Button>
-				)}
+							},
+						});
+						setIsSignOut(false);
+					}}
+					disabled={isSignOut}
+				>
+					<span className="text-sm">
+						{isSignOut ? (
+							<Loader2 size={15} className="animate-spin" />
+						) : (
+							<div className="flex items-center gap-2">
+								<LogOut size={16} />
+								Sign Out
+							</div>
+						)}
+					</span>
+				</Button>
 			</CardFooter>
 		</Card>
 	);
