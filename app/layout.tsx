@@ -12,7 +12,6 @@ export const metadata = createMetadata({
 		default: "Hellō Better Auth Demo",
 	},
 	description: "Next.js demo app showcasing the Better Auth plugin for Hellō",
-	// metadataBase: new URL("https://demo.better-auth.com"),
 });
 
 export default function RootLayout({

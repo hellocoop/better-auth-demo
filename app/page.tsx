@@ -2,8 +2,8 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { SignInButton } from "@/components/sign-in-btn";
-import { Button } from "@/components/ui/button";
 import InfoBlock from "@/components/InfoBlock";
+import { DashboardButton } from "@/components/dashboard-btn";
 
 export default async function Home() {
 	const session = await auth.api.getSession({
@@ -36,23 +36,7 @@ export default async function Home() {
 							<li>Profile Picture</li>
 						</ul>
 					</div>
-					{session?.session ? (
-						<Link href="/dashboard" className="mx-auto mt-6">
-						<Button className="gap-2 justify-between" variant="default">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="1.2em"
-								height="1.2em"
-								viewBox="0 0 24 24"
-							>
-								<path
-									fill="currentColor"
-									d="M5 3H3v4h2V5h14v14H5v-2H3v4h18V3zm12 8h-2V9h-2V7h-2v2h2v2H3v2h10v2h-2v2h2v-2h2v-2h2z"
-								></path>
-							</svg>
-							<span>Dashboard</span>
-						</Button></Link>) : <SignInButton/>
-					}
+					{session?.session ? <DashboardButton/> : <SignInButton/>}
 					<InfoBlock />
 				</div>
 			</main>
