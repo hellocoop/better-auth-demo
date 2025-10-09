@@ -7,6 +7,7 @@ const database = new Database("./auth.db");
 export const auth = betterAuth({
 	appName: "Better Auth Demo",
 	baseURL: "http://localhost:3000",
+	secret: process.env.BETTER_AUTH_SECRET,
 	database,
 	plugins: [
 		hellocoop({
