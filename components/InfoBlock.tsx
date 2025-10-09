@@ -7,7 +7,7 @@ export default function InfoBlock() {
             <div className="flex flex-col gap-3 pt-10 flex-wrap">
                 <div className="border-y py-2 border-dotted bg-secondary/60 opacity-80">
                     <div className="text-xs text-center gap-2 text-muted-foreground">
-                        This sample app demonstrates how you can add Hellō login and registration to Better Auth in seconds using the <a href="https://www.npmjs.com/package/@hellocoop/better-auth" className="inline underline">@hellocoop/better-auth</a> plugin package.
+                        This sample app demonstrates how you can add Hellō login and registration to Better Auth in seconds using the <a href="https://www.npmjs.com/package/@hellocoop/better-auth" className="inline underline" target="_blank">@hellocoop/better-auth</a> plugin package.
                     </div>
                 </div>
             </div>
