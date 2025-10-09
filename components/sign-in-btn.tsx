@@ -13,7 +13,7 @@ export function SignInButton() {
 			onClick={async () => {
 				setIsLoading(true);
 				try {
-					await (client as any).signInWithHello({
+					client.signInWithHello({
 						callbackURL: "/dashboard",
 					});
 				} catch (error) {

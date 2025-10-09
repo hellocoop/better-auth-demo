@@ -6,7 +6,6 @@ export function ThemeProvider({
 	...props
 }: {
 	children: React.ReactNode;
-	[key: string]: any;
-}) {
+} & React.ComponentProps<typeof NextThemesProvider>) {
 	return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

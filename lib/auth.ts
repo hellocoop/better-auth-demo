@@ -2,12 +2,6 @@ import { betterAuth } from "better-auth";
 import Database from "better-sqlite3";
 import { hellocoop } from "@hellocoop/better-auth";
 
-const clientId = process.env.HELLO_CLIENT_ID;
-
-if (!clientId) {
-	throw new Error("HELLO_CLIENT_ID environment variable is required");
-}
-
 const database = new Database("./auth.db");
 
 export const auth = betterAuth({
@@ -17,7 +11,7 @@ export const auth = betterAuth({
 	plugins: [
 		hellocoop({
 			config: {
-				clientId,
+				clientId: process.env.HELLO_CLIENT_ID,
 				providerHint: "github",
 				scopes: ["openid","profile"]
 			},

@@ -1,6 +1,4 @@
-import { SVGProps } from "react";
-
-export const Logo = (props: SVGProps<any>) => {
+export const Logo = () => {
 	return (
 		<svg
 			width="60"
