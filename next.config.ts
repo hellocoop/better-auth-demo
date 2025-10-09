@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
 		ignoreBuildErrors: true,
 	},
 	webpack: (config) => {
-		config.externals.push("@libsql/client");
+		config.externals.push("better-sqlite3");
 		return config;
 	},
 };
